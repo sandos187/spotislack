@@ -8,12 +8,7 @@ import requests
 import spotipy
 import spotipy.util as util
 
-'''
-export SPOTIPY_CLIENT_ID='874522d147984dff932e264c028dbdcf'
-export SPOTIPY_CLIENT_SECRET='20ee5ff2f2f046e898a511e38f6dc2ff'
-export SPOTIPY_REDIRECT_URI='https://sandos.net/callback'
-'''
-# spotify:artist:2uFUBdaVGtyMqckSeCl0Qj
+
 scope = 'user-read-currently-playing'
 spotipy_token = None
 
