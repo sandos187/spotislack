@@ -1,4 +1,4 @@
-# spotiyslack.py
+# spotislack.py
 
 This is a small script to post your current playing song from spotify to slack
 
