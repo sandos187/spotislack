@@ -26,7 +26,7 @@ During the Authorisation process, you will get an error message in your browser,
 ## Usage
 After sich installation and configuration process, you just need to call the script from terminal, and it should post the current song to the defined channel.
 
-## ATRENTION!
+## ATTENTION!
 This script is far from perfect, and at this moment just a little bit more than a proof-of-concept. For example there isn't any error- and exception-handling right now. If spotify isn't running while executing this script you just get a cryptic runtime error.
 Feel free to contribute an send some pull requests!
 
