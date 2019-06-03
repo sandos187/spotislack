@@ -77,8 +77,6 @@ def send_message_to_slack(token, channel, color, footer_icon, artist, songname, 
             }
         ]
     }
-    print(songurl)
-    print(artwork)
     url = 'https://slack.com/api/chat.postMessage'
     response = requests.post(url, headers=headers,
                              data=json.dumps(payload))
