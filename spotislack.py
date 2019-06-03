@@ -8,7 +8,6 @@ import requests
 import spotipy
 import spotipy.util as util
 
-
 scope = 'user-read-currently-playing'
 spotipy_token = None
 
@@ -47,7 +46,7 @@ def get_current_song_from_spotify(spotipy_token):
         results = sp.current_user_playing_track()
         artist = results['item']['album']['artists'][0]['name']
         songname = results['item']['name']
-        songurl = results['item']['uri']
+        songurl = results['item']['uri'].replace('spotify:track:', 'https://open.spotify.com/track/')
         artwork = results['item']['album']['images'][0]['url']
         fallback = "np: {0} - {1}".format(artist, songname)
     else:
@@ -78,6 +77,8 @@ def send_message_to_slack(token, channel, color, footer_icon, artist, songname, 
             }
         ]
     }
+    print(songurl)
+    print(artwork)
     url = 'https://slack.com/api/chat.postMessage'
     response = requests.post(url, headers=headers,
                              data=json.dumps(payload))
