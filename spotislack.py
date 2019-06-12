@@ -40,6 +40,7 @@ def get_current_song_from_spotify(spotipy_token):
         global artist
         global songname
         global songurl
+        global album
         global artwork
         global fallback
         sp = spotipy.Spotify(auth=spotipy_token)
@@ -47,13 +48,15 @@ def get_current_song_from_spotify(spotipy_token):
         artist = results['item']['album']['artists'][0]['name']
         songname = results['item']['name']
         songurl = results['item']['uri'].replace('spotify:track:', 'https://open.spotify.com/track/')
+        album = results['item']['album']['name']
         artwork = results['item']['album']['images'][0]['url']
         fallback = "np: {0} - {1}".format(artist, songname)
+        print(album)
     else:
         print("Can't get token for", spotipy_username)
 
 
-def send_message_to_slack(token, channel, color, footer_icon, artist, songname, songurl, artwork, fallback):
+def send_message_to_slack(token, channel, color, footer_icon, artist, songname, songurl, album, artwork, fallback):
     """ Makes use of Send API:
         https://developers.facebook.com/docs/messenger-platform/send-api-reference
     """
@@ -71,6 +74,7 @@ def send_message_to_slack(token, channel, color, footer_icon, artist, songname, 
                 "author_name": artist,
                 "title": songname,
                 "title_link": songurl,
+                "text": album,
                 "thumb_url": artwork,
                 "footer": "now playing",
                 "footer_icon": footer_icon,
@@ -91,7 +95,7 @@ def main():
         read_config()
         spotipy_token = util.prompt_for_user_token(spotipy_username, scope, spotipy_client_id, spotipy_client_secret, spotipy_redirect_uri)
         get_current_song_from_spotify(spotipy_token)
-        send_message_to_slack(slack_token, slack_channel, slack_color, slack_footer_icon, artist, songname, songurl, artwork, fallback)
+        send_message_to_slack(slack_token, slack_channel, slack_color, slack_footer_icon, artist, songname, songurl, album, artwork, fallback)
 
 
     except:
