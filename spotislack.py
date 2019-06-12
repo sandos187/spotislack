@@ -51,7 +51,6 @@ def get_current_song_from_spotify(spotipy_token):
         album = results['item']['album']['name']
         artwork = results['item']['album']['images'][0]['url']
         fallback = "np: {0} - {1}".format(artist, songname)
-        print(album)
     else:
         print("Can't get token for", spotipy_username)
 
