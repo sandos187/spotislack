@@ -10,9 +10,6 @@
 # this webhook is placed here
 slack_url = <url here>
 
-# the channel to post the message to
-slack_channel = #channelname
-
 # the color of the message's border
 slack_color = 2eb886
 
