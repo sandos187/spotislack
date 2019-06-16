@@ -1,4 +1,5 @@
 from configparser import ConfigParser
+from argparse import ArgumentParser
 import json
 import os
 import sys
@@ -40,6 +41,7 @@ def get_current_song_from_spotify(spotipy_token):
         global artist
         global songname
         global songurl
+        global album
         global artwork
         global fallback
         sp = spotipy.Spotify(auth=spotipy_token)
@@ -47,15 +49,16 @@ def get_current_song_from_spotify(spotipy_token):
         artist = results['item']['album']['artists'][0]['name']
         songname = results['item']['name']
         songurl = results['item']['uri'].replace('spotify:track:', 'https://open.spotify.com/track/')
+        album = results['item']['album']['name']
         artwork = results['item']['album']['images'][0]['url']
         fallback = "np: {0} - {1}".format(artist, songname)
     else:
         print("Can't get token for", spotipy_username)
 
 
-def send_message_to_slack(token, channel, color, footer_icon, artist, songname, songurl, artwork, fallback):
+def send_message_to_slack(token, channel, color, footer_icon, artist, songname, songurl, album, artwork, fallback):
     """ Makes use of Send API:
-        https://developers.facebook.com/docs/messenger-platform/send-api-reference
+        https://api.slack.com/methods/chat.postMessage
     """
     headers = {
         'Content-Type': 'application/json',
@@ -70,6 +73,7 @@ def send_message_to_slack(token, channel, color, footer_icon, artist, songname, 
                 "color": color,
                 "author_name": artist,
                 "title": songname,
+                "text": album,
                 "title_link": songurl,
                 "thumb_url": artwork,
                 "footer": "now playing",
@@ -81,18 +85,26 @@ def send_message_to_slack(token, channel, color, footer_icon, artist, songname, 
     response = requests.post(url, headers=headers,
                              data=json.dumps(payload))
     response.raise_for_status()
-    return response.json()
 
 
 def main():
     """ the main function """
+    parser = ArgumentParser()
+    parser.add_argument(
+        "-c", "--channel", help="overrides channel provided in config-file", action='store', dest="channel", type=str.lower)
+    args = parser.parse_args()
+
+    argchannel = args.channel
 
     try:
         read_config()
-        spotipy_token = util.prompt_for_user_token(spotipy_username, scope, spotipy_client_id, spotipy_client_secret, spotipy_redirect_uri)
+        if argchannel is not None:
+            slack_channel = argchannel
+        spotipy_token = util.prompt_for_user_token(
+            spotipy_username, scope, spotipy_client_id, spotipy_client_secret, spotipy_redirect_uri)
         get_current_song_from_spotify(spotipy_token)
-        send_message_to_slack(slack_token, slack_channel, slack_color, slack_footer_icon, artist, songname, songurl, artwork, fallback)
-
+        send_message_to_slack(slack_token, slack_channel, slack_color, slack_footer_icon,
+                              artist, songname, songurl, album, artwork, fallback)
 
     except:
         print("Connection Failed")
