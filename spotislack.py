@@ -27,7 +27,10 @@ def read_config():
         config = ConfigParser()
         config.read_file(conf)
     slack_token = config['slack']['slack_token']
-    slack_channel = config['slack']['slack_channel']
+    if argchannel is not None:
+        slack_channel = argchannel
+    else:
+        slack_channel = config['slack']['slack_channel']
     slack_color = config['slack']['slack_color']
     slack_footer_icon = config['slack']['slack_footer_icon']
     spotipy_client_id = config['spotify']['spotipy_client_id']
@@ -89,17 +92,16 @@ def send_message_to_slack(token, channel, color, footer_icon, artist, songname, 
 
 def main():
     """ the main function """
+    global argchannel
     parser = ArgumentParser()
     parser.add_argument(
-        "-c", "--channel", help="overrides channel provided in config-file", action='store', dest="channel", type=str.lower)
+        "-c", "--channel", help="overrides channel provided in config-file", action='store', dest="argchannel", type=str.lower)
     args = parser.parse_args()
-
-    argchannel = args.channel
+    argchannel = args.argchannel
 
     try:
         read_config()
-        if argchannel is not None:
-            slack_channel = argchannel
+
         spotipy_token = util.prompt_for_user_token(
             spotipy_username, scope, spotipy_client_id, spotipy_client_secret, spotipy_redirect_uri)
         get_current_song_from_spotify(spotipy_token)
