@@ -26,13 +26,13 @@ def read_config():
     with open(os.path.join(sys.path[0], 'spotislack.cfg')) as conf:
         config = ConfigParser()
         config.read_file(conf)
-    slack_token = config['slack']['slack_token']
+    slack_token = config[slack]['slack_token']
     if argchannel is not None:
         slack_channel = argchannel
     else:
-        slack_channel = config['slack']['slack_channel']
-    slack_color = config['slack']['slack_color']
-    slack_footer_icon = config['slack']['slack_footer_icon']
+        slack_channel = config[slack]['slack_channel']
+    slack_color = config[slack]['slack_color']
+    slack_footer_icon = config[slack]['slack_footer_icon']
     spotipy_client_id = config['spotify']['spotipy_client_id']
     spotipy_client_secret = config['spotify']['spotipy_client_secret']
     spotipy_redirect_uri = config['spotify']['spotipy_redirect_uri']
@@ -93,10 +93,14 @@ def send_message_to_slack(token, channel, color, footer_icon, artist, songname, 
 def main():
     """ the main function """
     global argchannel
+    global slack
     parser = ArgumentParser()
     parser.add_argument(
-        "-c", "--channel", help="overrides channel provided in config-file", action='store', dest="argchannel", type=str.lower)
+        "-s", "--slack", help="overrides default slack provided in config-file", action='store', dest="argslack", type=str.lower)
+    parser.add_argument(
+        "-c", "--channel", help="overrides default channel provided in config-file", action='store', dest="argchannel", type=str.lower)
     args = parser.parse_args()
+    slack = args.argslack
     argchannel = args.argchannel
 
     try:
