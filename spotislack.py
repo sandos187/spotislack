@@ -89,7 +89,7 @@ def send_message_to_slack(token, channel, color, footer_icon, artist, songname, 
                 "text": album,
                 "title_link": songurl,
                 "thumb_url": artwork,
-                "footer": "now listening",
+                "footer": "now playing",
                 "footer_icon": footer_icon,
             }
         ]
