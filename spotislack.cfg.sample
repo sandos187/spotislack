@@ -19,7 +19,7 @@ slack_token = <api_token>
 # the channel to post the message to
 slack_channel = #channelname
 
-# the color of the message's border
+# the color of the message's border or random for a random color
 slack_color = 2eb886
 
 # the icon to use as a footer image
