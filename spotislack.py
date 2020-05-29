@@ -3,7 +3,7 @@ from argparse import ArgumentParser
 import json
 import os
 import sys
-
+import random
 
 import requests
 import spotipy
@@ -38,6 +38,8 @@ def read_config():
     spotipy_redirect_uri = config['spotify']['spotipy_redirect_uri']
     spotipy_username = config['spotify']['spotipy_username']
 
+    if slack_color == "random":
+        slack_color = create_random_color()
 
 def get_current_song_from_spotify(spotipy_token):
     if spotipy_token:
@@ -58,6 +60,14 @@ def get_current_song_from_spotify(spotipy_token):
     else:
         print("Can't get token for", spotipy_username)
 
+
+def create_random_color():
+    """ returns a random color in hex format without leading #
+    """
+    random_hex = lambda: random.randint(0,255)
+    random_color = '{:02x}{:02x}{:02x}'.format(random_hex(), random_hex(), random_hex())
+    
+    return random_color
 
 def send_message_to_slack(token, channel, color, footer_icon, artist, songname, songurl, album, artwork, fallback):
     """ Makes use of Send API:
@@ -94,6 +104,7 @@ def main():
     """ the main function """
     global argchannel
     global slack
+    
     parser = ArgumentParser()
     parser.add_argument(
         "-s", "--slack", help="overrides default slack provided in config-file", action='store', dest="argslack", type=str.lower)
@@ -105,15 +116,16 @@ def main():
 
     try:
         read_config()
-
         spotipy_token = util.prompt_for_user_token(
             spotipy_username, scope, spotipy_client_id, spotipy_client_secret, spotipy_redirect_uri)
         get_current_song_from_spotify(spotipy_token)
+      
         send_message_to_slack(slack_token, slack_channel, slack_color, slack_footer_icon,
                               artist, songname, songurl, album, artwork, fallback)
 
-    except:
-        print("Connection Failed")
+    except Exception as e:
+        print("ERROR: Something failed")
+        print(e)
 
 
 if __name__ == "__main__":
