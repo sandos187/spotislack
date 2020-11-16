@@ -58,4 +58,6 @@ spotipy_client_secret = <client_secret>
 # here even an invalid URL is sufficient. Set it in the app settings
 spotipy_redirect_uri = <some url>
 
+# here an artwork fallback is defined, if spotify doesn't have one
+spotify_artwork_fallback = <some url>
 ### End of Config
